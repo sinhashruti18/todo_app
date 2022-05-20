@@ -12,4 +12,14 @@ class MyProvider extends ChangeNotifier {
     taskList.remove(listModel);
     notifyListeners();
   }
+
+  void editTask(ListModel listModel, int index) {
+    taskList.insert(index, listModel);
+    notifyListeners();
+  }
+
+  void edit(String newText, int index) {
+    taskList[index].task = newText;
+    notifyListeners();
+  }
 }

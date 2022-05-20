@@ -13,11 +13,58 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   TextEditingController _controller = TextEditingController();
-  Future showtaskDialog(BuildContext context) async {
-    String sampleText = '';
+  TextEditingController _controller2 = TextEditingController();
+  Future showtaskDialog2(BuildContext context, int index) async {
     showDialog<String>(
         context: context,
         builder: (context) {
+          return Consumer<MyProvider>(
+            builder: (context, value, child) => AlertDialog(
+              actions: [
+                Container(
+                    margin: EdgeInsets.all(4),
+                    child: MyTextField(
+                      Controller: _controller2,
+                      hintText: "Task",
+                    )),
+                SizedBox(
+                  height: 20,
+                ),
+                Center(
+                  child: GestureDetector(
+                    onTap: () {
+                      // final tasklist = ListModel(_controller.text);
+                      value.edit(_controller2.text, index);
+                      FocusScope.of(context).requestFocus(FocusNode());
+                      _controller.clear();
+                      Navigator.of(context).pop();
+
+                      // value.editTask(tasklist,index);
+                      // _controller.clear();
+                      // Navigator.of(context).pop();
+                    },
+                    child: Container(
+                        width: 50,
+                        height: 30,
+                        decoration: BoxDecoration(color: Colors.red),
+                        child: Center(child: Text("EDIT"))),
+                  ),
+                ),
+                SizedBox(
+                  height: 40,
+                ),
+              ],
+            ),
+          );
+        });
+  }
+
+  Future showtaskDialog(BuildContext context) async {
+    showDialog<String>(
+        context: context,
+        builder: (
+          context,
+        ) {
           return Consumer<MyProvider>(
             builder: (context, value, child) => AlertDialog(
               actions: [
@@ -33,8 +80,12 @@ class _HomePageState extends State<HomePage> {
                 Center(
                   child: GestureDetector(
                     onTap: () {
-                      final tasklist = ListModel(_controller.text);
-                      value.addTask(tasklist);
+                      final _tasklist = ListModel(_controller.text);
+                      value.addTask(
+                        _tasklist,
+                      );
+                      FocusScope.of(context).requestFocus(FocusNode());
+                      _controller.clear();
                       Navigator.of(context).pop();
                     },
                     child: Container(
@@ -76,12 +127,8 @@ class _HomePageState extends State<HomePage> {
                         spacing: 12,
                         children: [
                           GestureDetector(
-                            onTap: () async {
-                              final String newTask =
-                                  await showtaskDialog(context);
-                              setState(() {
-                                value.taskList[index].task = newTask;
-                              });
+                            onTap: () {
+                              showtaskDialog2(context, index);
                             },
                             child: Icon(Icons.edit),
                           ),
